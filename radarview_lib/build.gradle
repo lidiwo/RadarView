@@ -2,17 +2,11 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 27
-
-
-
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
-
-
-
+        versionName "1.0.0"
     }
 
     buildTypes {
@@ -21,10 +15,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
 
+/** 以下开始是将Android Library上传到jcenter的相关配置**/
+apply plugin: 'com.novoda.bintray-release'//添加
+//项目主页
+def siteUrl = 'https://github.com/lidiwo/RadarView'
+publish{
+    repoName = 'lidiwo'//远程仓库名字,不指明，默认是上传到maven
+    userOrg = 'lidiwo'//bintray.com的用户名
+    groupId = 'com.lidiwo'//jcenter上的路径
+    artifactId = 'RadarView'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = '自定义雷达效果控件'//描述，不重要
+    website = siteUrl//项目主页
+}
+tasks.withType(Javadoc) {//防止编码问题
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }

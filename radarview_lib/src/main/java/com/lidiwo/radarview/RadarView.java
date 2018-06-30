@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author：lidi
  * @date：2018/6/28 15:21
- * @Company：深圳思创远大企业管理咨询有限公司
+ * @Company：智能程序员
  * @Description： *****************************************************
  */
 public class RadarView extends View {

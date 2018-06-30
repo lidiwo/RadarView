@@ -1,4 +1,6 @@
 # RadarView
+ [ ![Download](https://api.bintray.com/packages/lidiwo/lidiwo/RadarView/images/download.svg) ](https://bintray.com/lidiwo/lidiwo/RadarView/_latestVersion)
+
 ## 功能说明
 * 支持对各层雷达网添加背景
 * 支持自定义雷达网层数
