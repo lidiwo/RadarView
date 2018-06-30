@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RadarView">
+        <!--雷达网层数-->
+        <attr name="radar_layer" format="integer" />
+        <!--顶角文字的颜色-->
+        <attr name="vertex_text_color" format="color" />
+        <!--顶角文字的大小-->
+        <attr name="vertex_text_size" format="dimension" />
+        <!--定点文字几个字换行-->
+        <attr name="vertex_text_ems" format="integer" />
+        <!--设置顶点文字距离最外圈的距离-->
+        <attr name="vertex_text_offset" format="dimension" />
+
+        <!--雷达模式-->
+        <attr name="radar_mode" format="enum">
+            <!--多边形-->
+            <enum name="polygon" value="1" />
+            <!--圆形-->
+            <enum name="circle" value="2" />
+        </attr>
+        <!-- 雷达线颜色 -->
+        <attr name="layer_line_color" format="color" />
+        <!-- 雷达线宽-->
+        <attr name="layer_line_width" format="dimension" />
+        <!-- 雷达线样式-->
+        <attr name="layer_line_style" format="boolean" />
+        <!-- 雷达虚线间距-->
+        <attr name="layer_dotted_line_spacing" format="dimension" />
+        <!-- 分数阴影的颜色-->
+        <attr name="score_shade_color" format="color" />
+    </declare-styleable>
+
+</resources>

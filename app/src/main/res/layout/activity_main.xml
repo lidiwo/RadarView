@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.lidiwo.radarview.RadarView
+        android:id="@+id/rv_radar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layer_dotted_line_spacing="5dp"
+        app:layer_line_color="@color/colorPrimary"
+        app:layer_line_style="true"
+        app:layer_line_width="1dp"
+        app:radar_mode="circle"
+        app:vertex_text_color="@color/colorAccent"
+        app:vertex_text_ems="5"
+        app:vertex_text_offset="10dp"
+        app:vertex_text_size="10sp" />
+
+</LinearLayout>
