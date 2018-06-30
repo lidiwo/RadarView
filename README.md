@@ -37,24 +37,17 @@
 
 xml | code | 说明
 ---|---|---
-app:radar_layer | setLayer | 雷达网层数
-app:rotation_enable | setRotationEnable | 是否打开手势旋转
-app:web_mode | setWebMode | 雷达网模式(多边形、圆形...)
-app:max_value | setMaxValue | 最外圈的值
-app:vertex_line_color | setVertexLineColor | 顶点连线颜色
-app:vertex_line_width | setVertexLineWidth | 顶点连线宽度
-app:layer_line_color | setLayerLineColor | 雷达网线条颜色
-app:layer_line_width | setLayerLineWidth | 雷达网线条宽度
-app:vertex_text | setVertexText | 顶点文字内容(字符串数组)
-app:vertex_text_color | setVertexTextColor | 顶点文字颜色
-app:vertex_text_size | setVertexTextSize | 顶点文字大小
-app:vertex_icon_size | setVertexIconSize | 顶点图片的尺寸限制值
-app:vertex_icon_position | setVertexIconPosition | 顶点图片相对于顶点文字的位置
-app:vertex_icon_margin | setVertexIconMargin | 顶点图片相对于顶点文字的间距
-app:vertex_text_offset | setVertexTextOffset | 顶点图文距最外层网偏移量
-app:center_text_color | setCenterTextColor | 中心文字颜色
-app:center_text_size | setCenterTextSize | 中心文字大小
-app:center_text | setCenterText | 中心文字内容
+app:radar_layer | setRadarLayer | 雷达网层数
+app:vertex_text_color | setVertexTextColor | 顶角文字的颜色
+app:vertex_text_size | setVertexTextSize |顶角文字的大小
+app:vertex_text_ems | setVertexTextEms | 顶角文字几个字换行
+app:vertex_text_offset | setVertexTextOffset | 设置顶点文字距离最外圈的距离
+app:radar_mode | setRadarMode | 雷达模式
+app:layer_line_color | setLayerLineColor | 雷达线颜色
+app:layer_line_width | setLayerLineWidth | 雷达线宽
+app:layer_line_style | setLayerLineStyle | 雷达线样式
+app:layer_dotted_line_spacing | setLayerDottedLineSpacing | 雷达虚线间距
+app:score_shade_color | setScoreShadeColor | 分数阴影的颜色
 
 注：各属性均有默认值
 

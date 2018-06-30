@@ -7,7 +7,7 @@
         <attr name="vertex_text_color" format="color" />
         <!--顶角文字的大小-->
         <attr name="vertex_text_size" format="dimension" />
-        <!--定点文字几个字换行-->
+        <!--顶角文字几个字换行-->
         <attr name="vertex_text_ems" format="integer" />
         <!--设置顶点文字距离最外圈的距离-->
         <attr name="vertex_text_offset" format="dimension" />
@@ -30,5 +30,4 @@
         <!-- 分数阴影的颜色-->
         <attr name="score_shade_color" format="color" />
     </declare-styleable>
-
 </resources>

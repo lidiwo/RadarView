@@ -474,4 +474,14 @@ public class RadarView extends View {
         this.mVertexTextOffset = mVertexTextOffset;
         invalidate();
     }
+
+    /**
+     * 设置分数阴影颜色
+     * @param mScoreShadeColor
+     */
+
+    public void setScoreShadeColor(int mScoreShadeColor) {
+        this.mScoreShadeColor = mScoreShadeColor;
+        invalidate();
+    }
 }
