@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.lidiwo.radarview.RadarView
+        android:background="@color/colorPrimaryDark"
         android:id="@+id/rv_radar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

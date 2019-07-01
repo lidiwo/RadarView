@@ -13,7 +13,11 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,15 +50,16 @@ public class RadarView extends View {
     private Path mRadarPath;//数据分数多边形路径
     private Paint mRadarLinePaint;//雷达圆圈线画笔
     private Paint mLayerPaint;//雷达层画笔
-    private Paint mSocorePaint;//雷达层分数画笔
+    private Paint mScorePaint;//雷达层分数画笔
     private TextPaint mVertexTextPaint;//顶脚文字的画笔
 
     private PointF mPointCenter;//控件的中心位置
     private float maxRadius;//记录圆最大半径
     private float maxLengthString = 0;//记录最长的字符串
-    private float textHight = 0;//文字高度
+    private float textHeight = 0;//文字高度
     private float maxScore = 0;//记录最大分数值
     private List<PointF> textPointF = new ArrayList<>();
+    private List<RadarBean> textPosition = new ArrayList<>();//记录顶角文字的坐标范围
 
     public RadarView(Context context) {
         this(context, null);
@@ -90,19 +95,20 @@ public class RadarView extends View {
     }
 
     private void init() {
+        this.setClickable(true);
         //初始化多边形路径
         mRadarPath = new Path();
 
         //初始化画笔
         mRadarLinePaint = new Paint();
         mLayerPaint = new Paint();
-        mSocorePaint = new Paint();
+        mScorePaint = new Paint();
         mVertexTextPaint = new TextPaint();
 
         //设置画笔抗锯齿
         mRadarLinePaint.setAntiAlias(true);
         mLayerPaint.setAntiAlias(true);
-        mSocorePaint.setAntiAlias(true);
+        mScorePaint.setAntiAlias(true);
         mVertexTextPaint.setAntiAlias(true);
     }
 
@@ -138,7 +144,7 @@ public class RadarView extends View {
         mVertexTextPaint.setColor(mVertexTextColor);
         mVertexTextPaint.setTextSize(mVertexTextSize);
         mLayerPaint.setStyle(Paint.Style.FILL);
-        mSocorePaint.setColor(mScoreShadeColor);
+        mScorePaint.setColor(mScoreShadeColor);
 
     }
 
@@ -169,8 +175,8 @@ public class RadarView extends View {
                 //计算每一层的半径 ,从最外层开始绘制
                 float radius = (maxRadius - mVertexTextOffset) / mRadarLayer * i;
                 //获取每一层的颜色
-                int layerCorlor = mRadarAdapter.getLayerColor(this, i - 1);
-                mLayerPaint.setColor(layerCorlor);
+                int layerColor = mRadarAdapter.getLayerColor(this, i - 1);
+                mLayerPaint.setColor(layerColor);
 
                 mRadarPath.reset();
                 for (int j = 0; j < mRadarAdapter.getTotalCount(); j++) {
@@ -200,10 +206,10 @@ public class RadarView extends View {
             //计算每一层的半径 ,从最外层开始绘制
             float radius = (maxRadius - mVertexTextOffset) / mRadarLayer * i;
             //获取每一层的颜色
-            int layerCorlor = mRadarAdapter.getLayerColor(this, i - 1);
-            mLayerPaint.setColor(layerCorlor);
+            int layerColor = mRadarAdapter.getLayerColor(this, i - 1);
+            mLayerPaint.setColor(layerColor);
 
-            if (layerCorlor != Color.TRANSPARENT) {
+            if (layerColor != Color.TRANSPARENT) {
                 canvas.drawCircle(mPointCenter.x, mPointCenter.y, radius, mLayerPaint);
             }
 
@@ -222,6 +228,9 @@ public class RadarView extends View {
                 //循环绘制交叉线，并且记录各项分数路径 、记录文字绘制位置
                 mRadarPath.reset();
                 textPointF.clear();
+                textPosition.clear();
+
+                RadarBean mRadarBean = null;
 
                 for (int i = 0; i < totalCount; i++) {
                     float stopX = mPointCenter.x + (maxRadius - mVertexTextOffset) * (float) Math.cos((angleOffset * i - 90) * Math.PI / 180f);
@@ -238,12 +247,19 @@ public class RadarView extends View {
                     }
 
                     String vertexText = mRadarAdapter.getVertexText(this, i);
-                    float hight = (float) Math.ceil(vertexText.length() * 1.0f / mVertexTextEms) * textHight;
+                    float height = (float) Math.ceil(vertexText.length() * 1.0f / mVertexTextEms) * textHeight;
                     float pointX = mPointCenter.x + maxRadius * (float) Math.cos((angleOffset * i - 90) * Math.PI / 180f);
                     float pointY = mPointCenter.y + maxRadius * (float) Math.sin((angleOffset * i - 90) * Math.PI / 180f);
 
-                    PointF pointF = coordinatesComputed(angleOffset * i - 90, pointX, pointY, hight);
+                    PointF pointF = coordinatesComputed(angleOffset * i - 90, pointX, pointY, height);
                     textPointF.add(pointF);
+
+
+                    //存储顶角文字坐标信息
+                    float textWidth = vertexText.length() * mVertexTextSize;
+                    mRadarBean = new RadarBean(pointF.x, pointF.y, pointF.x + textWidth, pointF.y + height);
+                    textPosition.add(mRadarBean);
+
                 }
                 mRadarPath.close();
             }
@@ -251,17 +267,17 @@ public class RadarView extends View {
     }
 
     // 计算文字坐标
-    private PointF coordinatesComputed(float angle, float pointX, float pointY, float hight) {
+    private PointF coordinatesComputed(float angle, float pointX, float pointY, float height) {
         PointF pointF = new PointF();
         if (angle == -90) {
             pointF.x = pointX - maxLengthString / 2;
-            pointF.y = pointY - hight;
+            pointF.y = pointY - height;
         } else if (angle > -90 && angle < 0) {
             pointF.x = pointX;
-            pointF.y = pointY - hight;
+            pointF.y = pointY - height;
         } else if (angle == 0) {
             pointF.x = pointX;
-            pointF.y = pointY - hight / 2;
+            pointF.y = pointY - height / 2;
         } else if (angle > 0 && angle < 90) {
             pointF.x = pointX;
             pointF.y = pointY;
@@ -273,10 +289,10 @@ public class RadarView extends View {
             pointF.y = pointY;
         } else if (angle == 180) {
             pointF.x = pointX - maxLengthString;
-            pointF.y = pointY - hight / 2;
+            pointF.y = pointY - height / 2;
         } else {
             pointF.x = pointX - maxLengthString;
-            pointF.y = pointY - hight;
+            pointF.y = pointY - height;
         }
         return pointF;
     }
@@ -290,13 +306,13 @@ public class RadarView extends View {
     }
 
     private void drawScore(Canvas canvas) {
-        mSocorePaint.setAlpha(255);
-        mSocorePaint.setStyle(Paint.Style.STROKE);
-        mSocorePaint.setStrokeWidth(mLayerLineWidth);
-        canvas.drawPath(mRadarPath, mSocorePaint);
-        mSocorePaint.setStyle(Paint.Style.FILL);
-        mSocorePaint.setAlpha(150);
-        canvas.drawPath(mRadarPath, mSocorePaint);
+        mScorePaint.setAlpha(255);
+        mScorePaint.setStyle(Paint.Style.STROKE);
+        mScorePaint.setStrokeWidth(mLayerLineWidth);
+        canvas.drawPath(mRadarPath, mScorePaint);
+        mScorePaint.setStyle(Paint.Style.FILL);
+        mScorePaint.setAlpha(150);
+        canvas.drawPath(mRadarPath, mScorePaint);
     }
 
 
@@ -342,9 +358,9 @@ public class RadarView extends View {
                             }
                         }
 
-                        if (textHight == 0) {
+                        if (textHeight == 0) {
                             Paint.FontMetrics fontMetrics = mVertexTextPaint.getFontMetrics();
-                            textHight = fontMetrics.bottom - fontMetrics.top;
+                            textHeight = fontMetrics.bottom - fontMetrics.top;
                         }
 
                     } else {
@@ -371,6 +387,51 @@ public class RadarView extends View {
     private float sp2px(float spValue) {
         final float fontScale = getContext().getResources().getDisplayMetrics().scaledDensity;
         return spValue * fontScale + 0.5f;
+    }
+
+    private float downX = 0f;
+    private float downY = 0f;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN://按下
+                downX = event.getX();
+                downY = event.getY();
+                break;
+            case MotionEvent.ACTION_UP://松开
+                float upX = event.getX();
+                float upY = event.getY();
+                float dx = upX - downX;
+                float dy = upY - downY;
+
+                Log.e("@@@", "@#@downX:" + downX);
+                Log.e("@@@", "@#@downY:" + downY);
+
+                if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+
+                    //查询点击点击位置
+                    int position = getClickPosition(downX, downY);
+                    //处理点击事件
+                    if (position >= 0 && mOnTextClickListener != null) {
+                        mOnTextClickListener.onTextClick(position);
+                    }
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private int getClickPosition(float downX, float downY) {
+        int position = -1;
+        for (int i = 0; i < textPosition.size(); i++) {
+            RadarBean bean = textPosition.get(i);
+            if (downX >= bean.getStartX() && downX <= bean.getEndX() && downY >= bean.getStartY() && downY <= bean.getEndY()) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     /**
@@ -477,6 +538,7 @@ public class RadarView extends View {
 
     /**
      * 设置分数阴影颜色
+     *
      * @param mScoreShadeColor
      */
 
@@ -484,4 +546,17 @@ public class RadarView extends View {
         this.mScoreShadeColor = mScoreShadeColor;
         invalidate();
     }
+
+
+    private OnTextClickListener mOnTextClickListener;
+
+    public interface OnTextClickListener {
+        void onTextClick(int position);
+    }
+
+    public void setOnTextClickListener(OnTextClickListener listener) {
+        this.mOnTextClickListener = listener;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.lidiwo.radardemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.lidiwo.radarview.RadarAdapter;
 import com.lidiwo.radarview.RadarView;
@@ -22,14 +23,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RadarView rv_radar=findViewById(R.id.rv_radar);
 
-        Collections.addAll(mShowData,new DemoBean("鹿鼎记",1),
+        Collections.addAll(mShowData,new DemoBean("鹿鼎记",3),
                                      new DemoBean("雪山飞狐",3),
                                      new DemoBean("射雕英雄传",5),
                                      new DemoBean("神雕侠侣1神雕侠侣2",7),
                                      new DemoBean("倚天屠龙记",9),
                                      new DemoBean("笑傲江湖",2),
                                      new DemoBean("连城诀",4),
-                                     new DemoBean("天龙八部1天龙八部2",6));
+                                     new DemoBean("天仙配",6),
+                                     new DemoBean("天龙八部",5),
+                                     new DemoBean("小李飞刀",3),
+                                     new DemoBean("天龙八部1天龙八部2天龙八部3天龙八部4",5));
 
 
         Collections.addAll(layerColor,0xFFFF0000,0xFF00FF00,0xFF0000FF,0xFFFFFF00,0xFF00FFFF,0xFFFF00FF,0xFFF0F0F0,0xFF0F0F0F);
@@ -56,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        rv_radar.setOnTextClickListener(new RadarView.OnTextClickListener() {
+            @Override
+            public void onTextClick(int position) {
+                Toast.makeText(MainActivity.this,"点击的位置"+position,Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 }
